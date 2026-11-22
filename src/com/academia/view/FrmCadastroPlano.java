@@ -49,19 +49,38 @@ public class FrmCadastroPlano extends javax.swing.JFrame {
         modelo.addRow(new Object[]{p.getCodigo(), p.getTitulo(), p.getMensalidade()});
     }
     
-    
+    private void carregarDados(){
+        int linha = tblPlanos.getSelectedRow();
+        
+        String c = String.valueOf(tblPlanos.getValueAt(linha, 0));
+        String t = String.valueOf(tblPlanos.getValueAt(linha, 1));
+        String m = String.valueOf(tblPlanos.getValueAt(linha, 2));
+        
+        txtCodigo.setText(c);
+        txtTitulo.setText(t);
+        txtMensalidade.setText(m);
+    }
     
     private void limparCampos(){
         txtCodigo.setText("");
         txtTitulo.setText("");
         txtMensalidade.setText("");
     }
+    
+    private void carregarTabela(){
+        for (Plano p : BancoDados.planos) {
+            inserirRegistroTabela(p);
+        }
+    }
+
+    
     /**
      * Creates new form frmCadastroPlano
      */
     public FrmCadastroPlano() {
         initComponents();
         habilitarBotoes(false);
+        carregarTabela();
     }
     
     
@@ -142,6 +161,11 @@ public class FrmCadastroPlano extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tblPlanos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPlanosMouseClicked(evt);
             }
         });
         jScrollPane2.setViewportView(tblPlanos);
@@ -239,9 +263,15 @@ public class FrmCadastroPlano extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here:      
+        if (tblPlanos.getSelectedRow() == -1){
+            JOptionPane.showMessageDialog(null, JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         operacao = "editar";
         habilitarBotoes(true);
+        
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -264,6 +294,23 @@ public class FrmCadastroPlano extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Plano cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             limparCampos();
             habilitarBotoes(false);
+            
+        } else if (operacao.equals("editar")) {
+            int codigo = Integer.parseInt(txtCodigo.getText());
+            for (Plano plano : BancoDados.planos) {
+                if ( plano.getCodigo() == codigo ) {
+                    plano.setTitulo(txtTitulo.getText());
+                    plano.setMensalidade(Double.parseDouble(txtMensalidade.getText()));
+                    break;
+                }
+            }
+            
+            int linha = tblPlanos.getSelectedRow();
+            tblPlanos.setValueAt(txtTitulo.getText(), linha, 1);
+            tblPlanos.setValueAt(Double.parseDouble(txtMensalidade.getText()), linha, 2);
+            JOptionPane.showMessageDialog(this, "Plano alterado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            limparCampos();
+            habilitarBotoes(false);
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
@@ -275,6 +322,11 @@ public class FrmCadastroPlano extends javax.swing.JFrame {
     private void txtMensalidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMensalidadeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtMensalidadeActionPerformed
+
+    private void tblPlanosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPlanosMouseClicked
+        // TODO add your handling code here:
+        carregarDados();
+    }//GEN-LAST:event_tblPlanosMouseClicked
 
     /**
      * @param args the command line arguments
