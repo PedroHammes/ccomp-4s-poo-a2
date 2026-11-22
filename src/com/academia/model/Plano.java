@@ -10,48 +10,38 @@ package com.academia.model;
  */
 public class Plano {
     private int codigo;
-    private String nome;
-    private double valor;
-    private int duracao;
+    private String titulo;
+    private double mensalidade;
     
-    public Plano(int c, String n, double v, int d){
+    public Plano(int c, String n, double v){
         this.codigo = c;
-        this.nome = n;
-        this.valor = v;
-        this.duracao = d;
+        this.titulo = n;
+        this.mensalidade = v;
     }
     
-    public void setNome( String valor ){
-        this.nome = valor;
+    public void setTitulo( String valor ){
+        this.titulo = valor;
     }
     
-    public void setValor( double valor ){
-        this.valor = valor;
-    }
-     
-    public void setDuracao( int valor ){
-        this.duracao = valor;
+    public void setMensalidade( double valor ){
+        this.mensalidade = valor;
     }
      
     public int getCodigo(){
         return this.codigo;
     }
     
-    public String getNome(){
-        return this.nome;
+    public String getTitulo(){
+        return this.titulo;
     }
     
-    public double getValor(){
-        return this.valor;
-    }
-    
-    public int getDuracao(){
-        return this.duracao;
+    public double getMensalidade(){
+        return this.mensalidade;
     }
     
     
     @Override // Sobrescrita do metodo default toString;
     public String toString(){
-        return this.nome;
+        return this.titulo;
     }
 }
