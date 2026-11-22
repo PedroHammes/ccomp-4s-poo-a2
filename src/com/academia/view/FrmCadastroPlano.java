@@ -3,6 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.academia.view;
+import com.academia.model.Plano;
+import com.academia.dados.BancoDados;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
@@ -24,6 +29,28 @@ public class FrmCadastroPlano extends javax.swing.JFrame {
         txtMensalidade.setEnabled(valor);
     }
     
+    private boolean validarDados(){
+        if (txtTitulo.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Informe o título.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        
+        try {
+            Double.parseDouble(txtMensalidade.getText());
+        } catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Valor de mensalidade inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    
+    private void inserirRegistroTabela(Plano p){
+        DefaultTableModel modelo = (DefaultTableModel) tblPlanos.getModel();
+        modelo.addRow(new Object[]{p.getCodigo(), p.getTitulo(), p.getMensalidade()});
+    }
+    
+    
+    
     private void limparCampos(){
         txtCodigo.setText("");
         txtTitulo.setText("");
@@ -36,6 +63,8 @@ public class FrmCadastroPlano extends javax.swing.JFrame {
         initComponents();
         habilitarBotoes(false);
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -76,6 +105,7 @@ public class FrmCadastroPlano extends javax.swing.JFrame {
         jLabel3.setText("Mensalidade");
 
         txtMensalidade.setName("txtMensalidade"); // NOI18N
+        txtMensalidade.addActionListener(this::txtMensalidadeActionPerformed);
 
         btnNovo.setText("Novo");
         btnNovo.addActionListener(this::btnNovoActionPerformed);
@@ -93,17 +123,14 @@ public class FrmCadastroPlano extends javax.swing.JFrame {
 
         tblPlanos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Código", "Titulo", "Mensalidade"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Double.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Double.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false
@@ -225,12 +252,29 @@ public class FrmCadastroPlano extends javax.swing.JFrame {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         // TODO add your handling code here:
+        if ( !validarDados()){
+            return;
+            
+        } else if( operacao.equals("novo")){
+            Plano p = new Plano(BancoDados.proximoCodigoPlano++, txtTitulo.getText(), Double.parseDouble(txtMensalidade.getText()));
+            BancoDados.planos.add(p);
+            inserirRegistroTabela(p);
+            // Abaixo fiz as duas linhas acima em linha única:
+            //BancoDados.planos.add(new Plano(BancoDados.proximoCodigoPlano++, txtTitulo.getText(), Double.parseDouble(txtMensalidade.getText())));
+            JOptionPane.showMessageDialog(this, "Plano cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            limparCampos();
+            habilitarBotoes(false);
+        }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_btnSairActionPerformed
+
+    private void txtMensalidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMensalidadeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMensalidadeActionPerformed
 
     /**
      * @param args the command line arguments
