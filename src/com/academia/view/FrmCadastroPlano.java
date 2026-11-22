@@ -133,6 +133,7 @@ public class FrmCadastroPlano extends javax.swing.JFrame {
         btnEditar.addActionListener(this::btnEditarActionPerformed);
 
         btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(this::btnExcluirActionPerformed);
 
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(this::btnCancelarActionPerformed);
@@ -327,6 +328,35 @@ public class FrmCadastroPlano extends javax.swing.JFrame {
         // TODO add your handling code here:
         carregarDados();
     }//GEN-LAST:event_tblPlanosMouseClicked
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        // TODO add your handling code here:
+        if (tblPlanos.getSelectedRow()== -1){
+            JOptionPane.showMessageDialog(null, "Nenhum plano selecionado!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        int resposta = JOptionPane.showConfirmDialog(this, "Excluir este plano?", "Confirmação", JOptionPane.YES_NO_OPTION);
+        
+        if (resposta != JOptionPane.YES_OPTION) {
+            return;
+        }
+        
+        int linha = tblPlanos.getSelectedRow();
+        int codigo = (int) tblPlanos.getValueAt(linha, 0);
+        
+        for ( int i = 0; i<BancoDados.planos.size(); i++){
+            
+            if (BancoDados.planos.get(i).getCodigo() == codigo) {
+                BancoDados.planos.remove(i);
+                DefaultTableModel modelo = (DefaultTableModel) tblPlanos.getModel();
+                modelo.removeRow(linha);
+                break;
+            }
+            
+            
+        }
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     /**
      * @param args the command line arguments
